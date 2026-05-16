@@ -1,0 +1,7 @@
+@CinemaTicketsReact_HostAddress = http://localhost:5276
+
+GET {{CinemaTicketsReact_HostAddress}}/api/users
+Accept: application/json
+
+
+###

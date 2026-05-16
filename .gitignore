@@ -1,0 +1,10 @@
+# Visual Studio Cache e file temporanei
+.vs/
+bin/
+obj/
+*.user
+
+# React / Node
+node_modules/
+dist/
+.env.local
