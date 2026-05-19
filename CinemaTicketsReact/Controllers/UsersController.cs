@@ -104,7 +104,11 @@ namespace CinemaTickets.Controllers
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
                 }
 
-                return Ok(new { message = "Profilo aggiornato con successo!" });
+                return Ok(new
+                {
+                    message = "Profilo aggiornato con successo!",
+                    rowVersion = user.RowVersion // <--- Spediamo la nuova RowVersion a React!
+                });
             }
             catch (DbUpdateConcurrencyException)
             {

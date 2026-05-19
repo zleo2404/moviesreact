@@ -7,7 +7,8 @@ export default function Register() {
         lastName: '',
         email: '',
         phoneNumber: '',
-        password: ''
+        password: '',
+        role: 'User'
     });
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
@@ -24,7 +25,7 @@ export default function Register() {
         setSuccessMessage('');
 
         try {
-            const response = await fetch('https://localhost:7123/api/Users/register', {
+            const response = await fetch('https://localhost:7275/api/Users/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)

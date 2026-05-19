@@ -34,7 +34,7 @@ namespace CinemaTickets.Models
         public string Role { get; set; } = "User";
 
         [Timestamp]
-        public byte[] RowVersion { get; set; }
+        public byte[]? RowVersion { get; set; }
 
         //navigation
         public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();

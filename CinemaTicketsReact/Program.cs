@@ -32,13 +32,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 // 3. CONFIGURAZIONE CORS (Il passaporto per far funzionare React su porta 5173)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("ReactAppPolicy", policy =>
-    {
-        policy.WithOrigins("http://localhost:5173") // L'URL del tuo server React
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
-    });
+    options.AddPolicy("AllowReactApp", // (O qualunque nome tu gli abbia dato)
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173", "https://localhost:5173") // <--- AGGIUNGI LA VERSIONE HTTPS QUI!
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials(); // <--- Assicurati che questo ci sia sempre per i Cookie!
+        });
 });
 
 builder.Services.AddControllers();
@@ -52,13 +53,14 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
 
+app.UseHttpsRedirection();
 // ORDINE CRITICO DEI MIDDLEWARE
 app.UseRouting();
 
 // Il CORS deve stare qui!
-app.UseCors("ReactAppPolicy");
+app.UseCors("AllowReactApp");
+
 
 app.UseAuthentication();
 app.UseAuthorization();
