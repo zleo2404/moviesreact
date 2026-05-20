@@ -8,7 +8,8 @@ export default function DeleteCard({
     isDeleting, 
     error, 
     isConflict, 
-    onRefresh, 
+    onRefresh,
+    disableDelete,
     children 
 }) {
     return (
@@ -29,13 +30,15 @@ export default function DeleteCard({
                                 </p>
                             </div>
 
-                            <FeedbackMessage message={error} type="error">
-                                {isConflict && (
-                                    <button onClick={onRefresh} type="button" className="btn btn-outline-danger fw-bold mt-2">
+                            <FeedbackMessage message={error} type="error" />
+                            
+                            {isConflict && (
+                                <div className="text-center mt-2 mb-4">
+                                    <button onClick={onRefresh} type="button" className="btn btn-outline-danger fw-bold">
                                         🔄 Refresh Page
                                     </button>
-                                )}
-                            </FeedbackMessage>
+                                </div>
+                            )}
                             
                             {children}
 
@@ -50,7 +53,7 @@ export default function DeleteCard({
                                     <button 
                                         type="submit" 
                                         className="btn btn-danger btn-lg px-5 fw-bold shadow-sm"
-                                        disabled={isDeleting}
+                                        disabled={isDeleting || disableDelete}
                                     >
                                         {isDeleting ? '⏳ Deleting...' : '🗑️ Yes, Delete'}
                                     </button>

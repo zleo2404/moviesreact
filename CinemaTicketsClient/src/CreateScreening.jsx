@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
-export default function CreateScreening({ currentUser }) {
+export default function CreateScreening() {
     const navigate = useNavigate();
+    const { user: currentUser } = useAuth();
 
     const [formData, setFormData] = useState({
         movieTitle: '',

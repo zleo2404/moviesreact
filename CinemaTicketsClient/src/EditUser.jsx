@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import FormInput from './components/FormInput';
 import FeedbackMessage from './components/FeedbackMessage';
+import { useAuth } from './AuthContext';
 
-export default function EditUser({ currentUser, setCurrentUser }) {
+export default function EditUser() { 
     const { id } = useParams();
     const navigate = useNavigate();
+
+    const { user: currentUser, login: setCurrentUser } = useAuth();
 
     const [formData, setFormData] = useState({
         id: '',
@@ -22,26 +25,28 @@ export default function EditUser({ currentUser, setCurrentUser }) {
     const [successMessage, setSuccessMessage] = useState('');
     const [isConflict, setIsConflict] = useState(false);
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = await fetch(`https://localhost:7275/api/Users/${id}`, {
-                    credentials: 'include'
-                });
+    const loadUserData = useCallback(async () => {
+        try {
+            const response = await fetch(`https://localhost:7275/api/Users/${id}`, {
+                credentials: 'include'
+            });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setFormData(data);
-                } else {
-                    setError('Unable to load user data.');
-                }
-            } catch (err) {
-                setError('Server connection error.');
+            if (response.ok) {
+                const data = await response.json();
+                setFormData(data);
+                setError('');
+                setIsConflict(false);
+            } else {
+                setError('Unable to load user data.');
             }
-        };
-
-        fetchUser();
+        } catch (err) {
+            setError('Server connection error.');
+        }
     }, [id]);
+
+    useEffect(() => {
+        loadUserData();
+    }, [loadUserData]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -67,15 +72,14 @@ export default function EditUser({ currentUser, setCurrentUser }) {
                 if (currentUser && currentUser.id === parseInt(id)) {
                     setCurrentUser({ ...currentUser, ...formData });
                 }
+                
                 const newRowVersion = data.rowVersion || data.RowVersion;
                 if (newRowVersion) {
-                    // updates the form with the new database signature for the next click
                     setFormData(prev => ({ ...prev, rowVersion: newRowVersion }));
                 }
-                setSuccessMessage(data.message);
+                setSuccessMessage(data.message || 'Saved successfully!');
             } else if (response.status === 409) {
-                //Another user has modified the data in the meantime
-                setError(data.message);
+                setError(data.message || 'This data has been modified by another user.');
                 setIsConflict(true);
             } else {
                 setError((data.message || 'Error during save.'));
@@ -85,14 +89,13 @@ export default function EditUser({ currentUser, setCurrentUser }) {
         }
     };
 
-    // Function to reload data in case of conflict (reloads the page)
     const handleRefresh = () => {
-        window.location.reload();
+        loadUserData();
+        setSuccessMessage("Data updated to the latest database version. Please review the changes.");
     };
 
     return (
         <div className="container mt-5 mb-5">
-
             <FeedbackMessage message={successMessage} type="success" />
 
             <div className="row justify-content-center">
@@ -105,12 +108,16 @@ export default function EditUser({ currentUser, setCurrentUser }) {
 
                         <div className="card-body p-5 bg-light">
 
-                            {/* Refresh button that appears only in case of RowVersion conflict */}
                             <FeedbackMessage message={error} type="error">
                                 {isConflict && (
-                                    <button onClick={handleRefresh} type="button" className="btn btn-danger fw-bold mt-2">
-                                        🔄 Refresh Page
-                                    </button>
+                                    <div className="text-center mt-2 mb-3">
+                                        <button onClick={handleRefresh} type="button" className="btn btn-warning fw-bold shadow-sm">
+                                            📥 Load Latest Data
+                                        </button>
+                                        <p className="text-muted mt-2 small">
+                                            Warning: This will overwrite the changes you just typed.
+                                        </p>
+                                    </div>
                                 )}
                             </FeedbackMessage>
 

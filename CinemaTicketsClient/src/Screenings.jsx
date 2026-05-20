@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import EmptyState from './components/EmptyState'
 import ScreeningRow from './components/ScreeningRow';
+import { useAuth } from './AuthContext';
 
-export default function Screenings({ currentUser }) {
+export default function Screenings() {
 
+    const { user: currentUser } = useAuth();
     const [screenings, setScreenings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');

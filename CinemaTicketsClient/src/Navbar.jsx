@@ -1,6 +1,11 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
-export default function Navbar({ user, onLogout }) {
+export default function Navbar() {
+    const { user, logout } = useAuth();
+    
+    const navigate = useNavigate();
+
     return (
         <header>
             <nav className="navbar navbar-expand-md navbar-light bg-white border-bottom box-shadow mb-4 py-2">
@@ -19,6 +24,7 @@ export default function Navbar({ user, onLogout }) {
                             <li className="nav-item"><Link className="nav-link text-dark" to="/">Home</Link></li>
                             <li className="nav-item"><Link className="nav-link text-dark" to="/privacy">Privacy</Link></li>
                             <li className="nav-item"><Link className="nav-link text-dark" to="/screenings">Screenings</Link></li>
+                            
                             {user && user.role === 'Admin' && (
                                 <li className="nav-item"><Link className="nav-link text-dark" to="/users">Users</Link></li>
                             )}
@@ -34,7 +40,7 @@ export default function Navbar({ user, onLogout }) {
                                         <Link className="btn btn-sm btn-outline-dark fw-bold" to={`/users/edit/${user.id}`}>Edit Info</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <button onClick={onLogout} className="btn btn-sm btn-danger fw-bold">Logout</button>
+                                        <button onClick={() => logout(navigate)} className="btn btn-sm btn-danger fw-bold">Logout</button>
                                     </li>
                                 </>
                             ) : (

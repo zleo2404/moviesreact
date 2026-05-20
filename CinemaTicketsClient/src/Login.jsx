@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import FormInput from './components/FormInput';
 import FeedbackMessage from './components/FeedbackMessage';
+import { useAuth } from './AuthContext';
 
-export default function Login({ onLogin }) {
+export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,7 +27,7 @@ export default function Login({ onLogin }) {
             const data = await response.json();
 
             if (response.ok) {
-                onLogin(data.user); 
+                login(data.user); 
                 navigate('/'); 
             } else {
                 setError(data.message || 'Invalid email or password.');

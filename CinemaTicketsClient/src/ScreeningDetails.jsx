@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
-export default function ScreeningDetails({ currentUser }) {
+export default function ScreeningDetails() {
     const { id } = useParams();
     
+    const { user: currentUser } = useAuth();
     const [screening, setScreening] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');

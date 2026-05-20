@@ -3,8 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import EmptyState from './components/EmptyState';
 import FeedbackMessage from './components/FeedbackMessage';
 import UserRow from './components/UserRow';
+import { useAuth } from './AuthContext';
 
-export default function UsersList({ currentUser }) {
+export default function UsersList() {
+    const { user: currentUser } = useAuth();
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');

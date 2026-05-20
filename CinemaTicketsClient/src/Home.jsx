@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
-export default function Home({ currentUser }) {
+export default function Home() {
+    
+    const { user: currentUser } = useAuth();
+
     return (
         <div className="d-flex align-items-center justify-content-center w-100" style={{ minHeight: '75vh' }}>
             <div className="row align-items-center w-100">
