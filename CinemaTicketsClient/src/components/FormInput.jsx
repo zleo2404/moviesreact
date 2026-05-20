@@ -6,7 +6,9 @@ export default function FormInput({
     value, 
     onChange, 
     placeholder, 
-    required 
+    required,
+    pattern,
+    title
 }) {
     return (
         <div className="mb-3">
@@ -21,6 +23,8 @@ export default function FormInput({
                     value={value} 
                     onChange={onChange} 
                     required={required} 
+                    pattern={pattern}
+                    title={title}
                 />
             </div>
         </div>

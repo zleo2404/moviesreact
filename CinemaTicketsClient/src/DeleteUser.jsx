@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
+
+import FeedbackMessage from './components/FeedbackMessage';
+
 export default function DeleteUser({ currentUser }) {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -18,7 +21,7 @@ export default function DeleteUser({ currentUser }) {
 
         const fetchUser = async () => {
             try {
-                const response = await fetch(`https://localhost:7123/api/Users/${id}`, {
+                const response = await fetch(`https://localhost:7275/api/Users/${id}`, {
                     credentials: 'include'
                 });
 
@@ -43,10 +46,10 @@ export default function DeleteUser({ currentUser }) {
         setIsConflict(false);
 
         try {
-            const response = await fetch(`https://localhost:7123/api/Users/${id}`, {
+            const response = await fetch(`https://localhost:7275/api/Users/${id}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(user.rowVersion), // Sending the concurrency signature
+                body: JSON.stringify(user.rowVersion),
                 credentials: 'include'
             });
 
@@ -79,7 +82,7 @@ export default function DeleteUser({ currentUser }) {
             <div className="row justify-content-center">
                 <div className="col-md-8">
                     <div className="card shadow-lg border-danger rounded-lg">
-                        
+
                         <div className="card-header bg-danger text-white text-center py-4">
                             <h2 className="card-title mb-0 fw-bold">⚠️ Delete User Account</h2>
                         </div>
@@ -91,33 +94,27 @@ export default function DeleteUser({ currentUser }) {
                             </div>
 
                             {/* Shows errors and the refresh button if there is a conflict */}
-                            {error && (
-                                <div className="text-danger text-center mb-4 fw-bold">
-                                    ❌ {error}
-                                    {isConflict && (
-                                        <div className="mt-3">
-                                            <button onClick={handleRefresh} className="btn btn-outline-secondary fw-bold">
-                                                🔄 Refresh Page
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                            
+                            <FeedbackMessage message={error} type="error">
+                                {isConflict && (
+                                    <button onClick={handleRefresh} type="button" className="btn btn-outline-danger fw-bold mt-2">
+                                        🔄 Refresh Page
+                                    </button>
+                                )}
+                            </FeedbackMessage>
+
                             <h5 className="text-dark fw-bold mb-4 border-bottom border-danger pb-2">User Information</h5>
-                            
-                            {/* Your grid structure (Description List) */}
+
                             <dl className="row fs-5">
                                 <dt className="col-sm-4 text-dark text-md-end">Full Name</dt>
                                 <dd className="col-sm-8 fw-bold text-dark">
                                     {user?.firstName} {user?.lastName}
                                 </dd>
-                                
+
                                 <dt className="col-sm-4 text-dark text-md-end">Email Address</dt>
                                 <dd className="col-sm-8 text-secondary">
                                     {user?.email}
                                 </dd>
-                                
+
                                 <dt className="col-sm-4 text-dark text-md-end">Phone Number</dt>
                                 <dd className="col-sm-8 text-secondary">
                                     {user?.phoneNumber || 'N/A'}
@@ -138,7 +135,7 @@ export default function DeleteUser({ currentUser }) {
                                 </dd>
                             </dl>
                         </div>
-                        
+
                         <div className="card-footer text-center py-4 bg-white border-top-0">
                             <form onSubmit={handleDelete}>
                                 <div className="d-flex justify-content-between align-items-center mt-2 px-md-4">
@@ -151,7 +148,7 @@ export default function DeleteUser({ currentUser }) {
                                 </div>
                             </form>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>

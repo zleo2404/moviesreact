@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import EmptyState from './components/EmptyState';
+import FeedbackMessage from './components/FeedbackMessage';
 
 export default function UsersList({ currentUser }) {
     const [users, setUsers] = useState([]);
@@ -51,17 +52,8 @@ export default function UsersList({ currentUser }) {
                 <h1 className="text-danger fw-bold m-0">👥 User Management</h1>
             </div>
 
-            {error && (
-                <div className="alert alert-danger shadow-sm fw-bold text-center mb-4">
-                    ❌ {error}
-                </div>
-            )}
-
-            {successMessage && (
-                <div className="alert alert-success shadow-sm fw-bold text-center mb-4">
-                    ✅ {successMessage}
-                </div>
-            )}
+            <FeedbackMessage message={error} type="error" />
+            <FeedbackMessage message={successMessage} type="success" />
 
             {users.length === 0 && !error ? (
                 <EmptyState
@@ -102,14 +94,10 @@ export default function UsersList({ currentUser }) {
                                             <Link to={`/users/edit/${user.id}`} className="btn btn-sm btn-outline-secondary fw-bold px-3">
                                                 Edit
                                             </Link>
-
-                                            {/* These will point to components we will create later 
-                                            <Link to={`/users/details/${user.id}`} className="btn btn-sm btn-danger fw-bold shadow-sm px-3">
-                                                Details
-                                            </Link>
+                                            
                                             <Link to={`/users/delete/${user.id}`} className="btn btn-sm btn-dark fw-bold px-3">
                                                 Delete
-                                            </Link>*/}
+                                            </Link>
                                         </div>
                                     </td>
                                 </tr>

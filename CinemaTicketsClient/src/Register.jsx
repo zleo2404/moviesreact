@@ -80,12 +80,14 @@ export default function Register() {
 
                                 <FormInput
                                     label="Email Address" icon="✉️" type="email" name="email"
-                                    placeholder="john.doe@hollywood.com" value={formData.email} onChange={handleChange} required
+                                    placeholder="john.doe@hollywood.com" value={formData.email} onChange={handleChange}
+                                    title="Inserisci un indirizzo email valido (es: nome@dominio.com)" required
                                 />
 
                                 <FormInput
                                     label="Phone Number" icon="📞" type="tel" name="phoneNumber"
-                                    placeholder="+1 555 1234567" value={formData.phoneNumber} onChange={handleChange}
+                                    placeholder="+1 555 1234567" value={formData.phoneNumber} onChange={handleChange} pattern="^\+?[0-9\s\-]{7,15}$"
+                                    title="Inserisci un numero di telefono valido (min 7, max 15 caratteri)" required
                                 />
 
                                 <FormInput
