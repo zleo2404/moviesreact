@@ -37,10 +37,10 @@ export default function Register() {
                 setSuccessMessage("✅ " + data.message);
                 setTimeout(() => navigate('/login'), 2500);
             } else {
-                setError("❌ " + (data.message || 'Errore durante la registrazione.'));
+                setError("❌ " + (data.message || 'Error during registration.'));
             }
         } catch (err) {
-            setError('❌ Errore di connessione al server.');
+            setError('❌ Server connection error.');
         }
     };
 

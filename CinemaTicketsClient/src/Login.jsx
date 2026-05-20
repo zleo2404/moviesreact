@@ -26,10 +26,10 @@ export default function Login({ onLogin }) {
                 onLogin(data.user); 
                 navigate('/'); 
             } else {
-                setError(data.message || 'Email o password non validi.');
+                setError(data.message || 'Invalid email or password.');
             }
         } catch (err) {
-            setError('Errore di connessione al server.');
+            setError('Server connection error.');
         }
     };
 

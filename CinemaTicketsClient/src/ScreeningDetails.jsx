@@ -4,15 +4,12 @@ import { useParams, Link } from 'react-router-dom';
 export default function ScreeningDetails({ currentUser }) {
     const { id } = useParams();
     
-    // Stati per gestire i dati, il caricamento e gli errori
     const [screening, setScreening] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    // Controllo permessi: solo gli Admin possono vedere il tasto "Edit"
     const canEdit = currentUser && currentUser.role === 'Admin';
 
-    // Recupera i dati della proiezione dal server
     useEffect(() => {
         const fetchDetails = async () => {
             try {
@@ -22,10 +19,10 @@ export default function ScreeningDetails({ currentUser }) {
                     const data = await response.json();
                     setScreening(data);
                 } else {
-                    setError('Impossibile caricare i dettagli della proiezione.');
+                    setError('Unable to load screening details.');
                 }
             } catch (err) {
-                setError('Errore di connessione al server.');
+                setError('Server connection error.');
             } finally {
                 setLoading(false);
             }
@@ -34,17 +31,15 @@ export default function ScreeningDetails({ currentUser }) {
         fetchDetails();
     }, [id]);
 
-    // Schermata di caricamento
     if (loading) {
-        return <h3 className="text-center mt-5">Caricamento dettagli in corso... ⏳</h3>;
+        return <h3 className="text-center mt-5">Loading details... ⏳</h3>;
     }
 
-    // Schermata di errore
     if (error || !screening) {
         return (
             <div className="container mt-5 text-center">
-                <div className="alert alert-danger">{error || "Proiezione non trovata."}</div>
-                <Link to="/screenings" className="btn btn-dark mt-3">🔙 Torna alla Lista</Link>
+                <div className="alert alert-danger">{error || "Screening not found."}</div>
+                <Link to="/screenings" className="btn btn-dark mt-3">🔙 Back to List</Link>
             </div>
         );
     }
@@ -87,7 +82,7 @@ export default function ScreeningDetails({ currentUser }) {
                                 🔙 Back to List
                             </Link>
                             
-                            {/* Tasto Edit visibile solo agli Admin 
+                            {/* Edit button visible only to Admins 
                             {canEdit && (
                                 <Link to={`/screenings/edit/${screening.id}`} className="btn btn-danger btn-lg px-4 fw-bold shadow-sm">
                                     ⚙️ Edit

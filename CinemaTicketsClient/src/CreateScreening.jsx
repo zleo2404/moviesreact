@@ -130,7 +130,6 @@ export default function CreateScreening({ currentUser }) {
                                             required
                                         >
                                             <option value="">-- Seleziona un Cinema --</option>
-                                            {/* Creiamo le opzioni del select in base ai dati scaricati */}
                                             {cinemas.map(cinema => (
                                                 <option key={cinema.id} value={cinema.id}>
                                                     {cinema.name}

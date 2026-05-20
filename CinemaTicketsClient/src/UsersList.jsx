@@ -9,31 +9,28 @@ export default function UsersList({ currentUser }) {
     
     const navigate = useNavigate();
 
-    // Quando il componente viene caricato, andiamo a pescare gli utenti
     useEffect(() => {
-        // Controllo di sicurezza lato Client: Se non sei Admin, non puoi stare qui
         if (!currentUser || currentUser.role !== 'Admin') {
-            navigate('/'); // Ti caccia alla home page
+            navigate('/');
             return;
         }
 
         const fetchUsers = async () => {
             try {
-                // Chiamata GET al nostro C#
                 const response = await fetch('https://localhost:7275/api/Users', {
-                    credentials: 'include' // Passiamo il cookie per dimostrare di essere Admin
+                    credentials: 'include' // We pass the cookie to prove we are Admin
                 });
 
                 if (response.ok) {
                     const data = await response.json();
                     setUsers(data);
                 } else if (response.status === 403) {
-                    setError('Accesso negato. Solo gli amministratori possono vedere questa pagina.');
+                    setError('Access denied. Only administrators can view this page.');
                 } else {
-                    setError('Errore durante il caricamento degli utenti.');
+                    setError('Error loading users.');
                 }
             } catch (err) {
-                setError('Errore di connessione al server.');
+                setError('Server connection error.');
             } finally {
                 setIsLoading(false);
             }
@@ -42,9 +39,8 @@ export default function UsersList({ currentUser }) {
         fetchUsers();
     }, [currentUser, navigate]);
 
-    // Mentre aspettiamo i dati, mostriamo un caricamento base
     if (isLoading) {
-        return <div className="text-center mt-5"><h4>Caricamento utenti in corso... ⏳</h4></div>;
+        return <div className="text-center mt-5"><h4>Loading users... ⏳</h4></div>;
     }
 
     return (
@@ -66,7 +62,6 @@ export default function UsersList({ currentUser }) {
                 </div>
             )}
 
-            {/* Equivalente del tuo if (!Model.Any()) */}
             {users.length === 0 && !error ? (
                 <div className="alert alert-light border border-danger shadow-sm text-center py-5 rounded-4 mt-4">
                     <h4 className="text-dark fw-bold mb-3">No users found.</h4>
@@ -88,7 +83,6 @@ export default function UsersList({ currentUser }) {
                         </thead>
                         
                         <tbody>
-                            {/* Equivalente del tuo @foreach */}
                             {users.map((user) => (
                                 <tr key={user.id}>
                                     <td className="fw-bold text-dark ps-4">{user.firstName}</td>
@@ -96,7 +90,6 @@ export default function UsersList({ currentUser }) {
                                     <td>{user.email}</td>
                                     <td>{user.phoneNumber}</td>
                                     <td>
-                                        {/* Operatore ternario per il badge dei ruoli */}
                                         {user.role === "Admin" ? (
                                             <span className="badge bg-danger px-2 py-1">{user.role}</span>
                                         ) : (
@@ -105,12 +98,11 @@ export default function UsersList({ currentUser }) {
                                     </td>
                                     <td className="pe-4">
                                         <div className="d-flex justify-content-center gap-2">
-                                            {/* Nota come usiamo i backtick ` per inserire l'ID direttamente nell'URL */}
                                             <Link to={`/users/edit/${user.id}`} className="btn btn-sm btn-outline-secondary fw-bold px-3">
                                                 Edit
                                             </Link>
                                             
-                                            {/* Questi punteranno a componenti che creeremo più avanti 
+                                            {/* These will point to components we will create later 
                                             <Link to={`/users/details/${user.id}`} className="btn btn-sm btn-danger fw-bold shadow-sm px-3">
                                                 Details
                                             </Link>
