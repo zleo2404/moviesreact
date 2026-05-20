@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import FormInput from './components/FormInput';
+import FeedbackMessage from './components/FeedbackMessage';
 
-export default function EditUser({ currentUser, setCurrentUser}) {
+export default function EditUser({ currentUser, setCurrentUser }) {
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -13,7 +15,7 @@ export default function EditUser({ currentUser, setCurrentUser}) {
         phoneNumber: '',
         password: '',
         role: '',
-        rowVersion: '' 
+        rowVersion: ''
     });
 
     const [error, setError] = useState('');
@@ -26,7 +28,7 @@ export default function EditUser({ currentUser, setCurrentUser}) {
                 const response = await fetch(`https://localhost:7275/api/Users/${id}`, {
                     credentials: 'include'
                 });
-                
+
                 if (response.ok) {
                     const data = await response.json();
                     setFormData(data);
@@ -63,13 +65,13 @@ export default function EditUser({ currentUser, setCurrentUser}) {
 
             if (response.ok) {
                 if (currentUser && currentUser.id === parseInt(id)) {
-                setCurrentUser({ ...currentUser, ...formData });
-    }
-                const newRowVersion = data.rowVersion || data.RowVersion; 
-    if (newRowVersion) {
-        // updates the form with the new database signature for the next click
-        setFormData(prev => ({ ...prev, rowVersion: newRowVersion }));
-    }
+                    setCurrentUser({ ...currentUser, ...formData });
+                }
+                const newRowVersion = data.rowVersion || data.RowVersion;
+                if (newRowVersion) {
+                    // updates the form with the new database signature for the next click
+                    setFormData(prev => ({ ...prev, rowVersion: newRowVersion }));
+                }
                 setSuccessMessage("✅ " + data.message);
             } else if (response.status === 409) {
                 //Another user has modified the data in the meantime
@@ -90,129 +92,64 @@ export default function EditUser({ currentUser, setCurrentUser}) {
 
     return (
         <div className="container mt-5 mb-5">
-            {successMessage && (
-                <div className="alert alert-success shadow-sm fw-bold text-center mb-4">
-                    {successMessage}
-                </div>
-            )}
-            
-            {error && (
-                <div className="alert alert-danger shadow-sm fw-bold text-center mb-4">
-                    {error}
-                </div>
-            )}
+
+            <FeedbackMessage message={successMessage} type="success" />
 
             <div className="row justify-content-center">
                 <div className="col-md-8">
                     <div className="card shadow-lg border-0 rounded-lg">
-                        
+
                         <div className="card-header bg-dark text-white text-center py-4 border-bottom border-danger border-3">
                             <h2 className="card-title mb-0 fw-bold">⚙️ Edit User Profile</h2>
                         </div>
-                        
+
                         <div className="card-body p-5 bg-light">
-                            
+
                             {/* Refresh button that appears only in case of RowVersion conflict */}
-                            {isConflict && (
-                                <div className="text-center mb-4">
-                                    <button onClick={handleRefresh} type="button" className="btn btn-danger fw-bold">
+                            <FeedbackMessage message={error} type="error">
+                                {isConflict && (
+                                    <button onClick={handleRefresh} type="button" className="btn btn-danger fw-bold mt-2">
                                         🔄 Refresh Page
                                     </button>
-                                </div>
-                            )}
+                                )}
+                            </FeedbackMessage>
 
                             <form onSubmit={handleSubmit}>
                                 <div className="row">
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label fw-bold text-dark">First Name</label>
-                                        <div className="input-group">
-                                            <span className="input-group-text bg-white border-end-0">👤</span>
-                                            <input 
-                                                type="text"
-                                                name="firstName" 
-                                                value={formData.firstName} 
-                                                onChange={handleChange} 
-                                                className="form-control border-start-0" 
-                                                required 
-                                            />
-                                        </div>
+                                    <div className="col-md-6">
+                                        <FormInput
+                                            label="First Name" icon="👤" name="firstName"
+                                            value={formData.firstName} onChange={handleChange} required
+                                        />
                                     </div>
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label fw-bold text-dark">Last Name</label>
-                                        <div className="input-group">
-                                            <span className="input-group-text bg-white border-end-0">👤</span>
-                                            <input 
-                                                type="text"
-                                                name="lastName" 
-                                                value={formData.lastName} 
-                                                onChange={handleChange} 
-                                                className="form-control border-start-0" 
-                                                required 
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label fw-bold text-dark">Email Address</label>
-                                    <div className="input-group">
-                                        <span className="input-group-text bg-white border-end-0">✉️</span>
-                                        <input 
-                                            type="email"
-                                            name="email" 
-                                            value={formData.email} 
-                                            onChange={handleChange} 
-                                            className="form-control border-start-0" 
-                                            required 
+                                    <div className="col-md-6">
+                                        <FormInput
+                                            label="Last Name" icon="👤" name="lastName"
+                                            value={formData.lastName} onChange={handleChange} required
                                         />
                                     </div>
                                 </div>
 
-                                <div className="mb-3">
-                                    <label className="form-label fw-bold text-dark">Phone Number</label>
-                                    <div className="input-group">
-                                        <span className="input-group-text bg-white border-end-0">📞</span>
-                                        <input 
-                                            type="tel"
-                                            name="phoneNumber" 
-                                            value={formData.phoneNumber || ''} 
-                                            onChange={handleChange} 
-                                            className="form-control border-start-0" 
-                                        />
-                                    </div>
-                                </div>
+                                <FormInput
+                                    label="Email Address" icon="✉️" type="email" name="email"
+                                    value={formData.email} onChange={handleChange} required
+                                />
 
-                                <div className="mb-3">
-                                    <label className="form-label fw-bold text-dark">Password</label>
-                                    <div className="input-group">
-                                        <span className="input-group-text bg-white border-end-0">🔑</span>
-                                        <input 
-                                            type="text"
-                                            name="password" 
-                                            value={formData.password} 
-                                            onChange={handleChange} 
-                                            className="form-control border-start-0" 
-                                            required 
-                                        />
-                                    </div>
-                                </div>
+                                <FormInput
+                                    label="Phone Number" icon="📞" type="tel" name="phoneNumber"
+                                    value={formData.phoneNumber || ''} onChange={handleChange}
+                                />
 
-                                {/*visible and editable ONLY if the logged user is an Admin */}
+                                <FormInput
+                                    label="Password" icon="🔑" type="text" name="password"
+                                    value={formData.password} onChange={handleChange} required
+                                />
+
                                 {currentUser && currentUser.role === 'Admin' && (
-                                    <div className="mb-3">
-                                        <label className="form-label fw-bold text-dark">Role</label>
-                                        <div className="input-group">
-                                            <span className="input-group-text bg-white border-end-0">🛡️</span>
-                                            <input 
-                                                type="text"
-                                                name="role" 
-                                                value={formData.role} 
-                                                onChange={handleChange} 
-                                                className="form-control border-start-0" 
-                                                required 
-                                            />
-                                        </div>
-                                    </div>
+                                    <FormInput
+                                        label="Role" icon="🛡️" name="role"
+                                        value={formData.role} onChange={handleChange} required
+                                    />
                                 )}
 
                                 <div className="d-flex justify-content-between align-items-center mt-4">

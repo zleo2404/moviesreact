@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import EmptyState from './components/EmptyState';
 
 export default function UsersList({ currentUser }) {
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -45,7 +46,7 @@ export default function UsersList({ currentUser }) {
 
     return (
         <div className="container mb-5 mt-4">
-            
+
             <div className="mb-4">
                 <h1 className="text-danger fw-bold m-0">👥 User Management</h1>
             </div>
@@ -55,7 +56,7 @@ export default function UsersList({ currentUser }) {
                     ❌ {error}
                 </div>
             )}
-            
+
             {successMessage && (
                 <div className="alert alert-success shadow-sm fw-bold text-center mb-4">
                     ✅ {successMessage}
@@ -63,14 +64,14 @@ export default function UsersList({ currentUser }) {
             )}
 
             {users.length === 0 && !error ? (
-                <div className="alert alert-light border border-danger shadow-sm text-center py-5 rounded-4 mt-4">
-                    <h4 className="text-dark fw-bold mb-3">No users found.</h4>
-                    <p className="text-muted">The system currently has no registered users.</p>
-                </div>
+                <EmptyState
+                    title="No users found."
+                    description="The system currently has no registered users."
+                />
             ) : (
                 <div className="table-responsive shadow-sm rounded-4 border mb-5">
                     <table className="table table-hover align-middle mb-0 bg-white">
-                        
+
                         <thead className="table-dark border-danger" style={{ borderBottomWidth: '3px' }}>
                             <tr>
                                 <th className="py-3 ps-4">First Name</th>
@@ -81,7 +82,7 @@ export default function UsersList({ currentUser }) {
                                 <th className="py-3 text-center pe-4">Actions</th>
                             </tr>
                         </thead>
-                        
+
                         <tbody>
                             {users.map((user) => (
                                 <tr key={user.id}>
@@ -101,7 +102,7 @@ export default function UsersList({ currentUser }) {
                                             <Link to={`/users/edit/${user.id}`} className="btn btn-sm btn-outline-secondary fw-bold px-3">
                                                 Edit
                                             </Link>
-                                            
+
                                             {/* These will point to components we will create later 
                                             <Link to={`/users/details/${user.id}`} className="btn btn-sm btn-danger fw-bold shadow-sm px-3">
                                                 Details

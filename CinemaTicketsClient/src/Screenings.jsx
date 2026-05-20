@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import EmptyState from './components/EmptyState'
 
 export default function Screenings({ currentUser }) {
-    
+
     const [screenings, setScreenings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -13,7 +14,7 @@ export default function Screenings({ currentUser }) {
         const fetchScreenings = async () => {
             try {
                 const response = await fetch('https://localhost:7275/api/Screenings');
-                
+
                 if (response.ok) {
                     const data = await response.json();
                     setScreenings(data);
@@ -43,7 +44,7 @@ export default function Screenings({ currentUser }) {
             <div className="mb-4 mt-4">
                 <h1 className="text-danger fw-bold m-0">🎬 Film Screenings</h1>
             </div>
-               
+
             {canEdit && (
                 <Link to="/screenings/create" className="btn btn-danger fw-bold shadow-sm px-4 mb-3">
                     🍿 Create New
@@ -51,19 +52,20 @@ export default function Screenings({ currentUser }) {
             )}
 
             {screenings.length === 0 ? (
-                <div className="alert alert-light border border-danger shadow-sm text-center py-5 rounded-4 mt-4">
-                    <h4 className="text-dark fw-bold mb-3">No screenings available right now.</h4>
-                    <p className="text-muted">Check back later for new movies and showtimes!</p>
+                <EmptyState
+                    title="No screenings available right now."
+                    description="Check back later for new movies and showtimes!"
+                >
                     {canEdit && (
-                        <Link to="/screenings/create" className="btn btn-outline-danger fw-bold mt-3">
+                        <Link to="/screenings/create" className="btn btn-outline-danger fw-bold">
                             Create the first screening
                         </Link>
                     )}
-                </div>
+                </EmptyState>
             ) : (
                 <div className="table-responsive shadow-sm rounded-4 border overflow-hidden mb-5">
                     <table className="table table-hover align-middle mb-0 bg-white">
-                        
+
                         <thead className="table-dark border-danger" style={{ borderBottomWidth: '3px' }}>
                             <tr>
                                 <th className="py-3 ps-4">Movie Title</th>
@@ -72,7 +74,7 @@ export default function Screenings({ currentUser }) {
                                 <th className="py-3 text-center pe-4">Actions</th>
                             </tr>
                         </thead>
-                        
+
                         <tbody>
                             {screenings.map((item) => (
                                 <tr key={item.id}>
@@ -93,11 +95,11 @@ export default function Screenings({ currentUser }) {
                                                     Edit
                                                 </Link>
                                             )}*/}
-                                            
+
                                             <Link to={`/screenings/details/${item.id}`} className="btn btn-sm btn-danger fw-bold shadow-sm px-3">
                                                 Details
                                             </Link>
-                                            
+
                                             {canEdit && (
                                                 <Link to={`/screenings/delete/${item.id}`} className="btn btn-sm btn-dark fw-bold px-3">
                                                     Delete

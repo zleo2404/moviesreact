@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import FormInput from './components/FormInput';
+import FeedbackMessage from './components/FeedbackMessage';
 
 export default function Login({ onLogin }) {
     const [email, setEmail] = useState('');
@@ -44,42 +46,30 @@ export default function Login({ onLogin }) {
                         </div>
 
                         <div className="card-body p-4 bg-light">
-                            {error && (
-                                <div className="alert alert-danger shadow-sm fw-bold text-center mb-4">
-                                    ❌ {error}
-                                </div>
-                            )}
+
+                            <FeedbackMessage message={error} type="error" />
 
                             <form onSubmit={handleSubmit}>
-                                <div className="mb-3">
-                                    <label className="form-label fw-bold text-secondary">Email Address</label>
-                                    <div className="input-group">
-                                        <span className="input-group-text bg-white border-end-0">✉️</span>
-                                        <input 
-                                            type="email" 
-                                            className="form-control border-start-0" 
-                                            placeholder="director@hollywood.com" 
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            required 
-                                        />
-                                    </div>
-                                </div>
 
-                                <div className="mb-4">
-                                    <label className="form-label fw-bold text-secondary">Password</label>
-                                    <div className="input-group">
-                                        <span className="input-group-text bg-white border-end-0">🔑</span>
-                                        <input 
-                                            type="password" 
-                                            className="form-control border-start-0" 
-                                            placeholder="Enter your secret password" 
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            required 
-                                        />
-                                    </div>
-                                </div>
+                                <FormInput 
+                                    label="Email Address" 
+                                    icon="✉️" 
+                                    type="email" 
+                                    placeholder="director@hollywood.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required={true}
+                                />
+
+                                <FormInput 
+                                    label="Password" 
+                                    icon="🔑" 
+                                    type="password" 
+                                    placeholder="Enter your secret password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required={true}
+                                />
 
                                 <div className="d-grid mt-4">
                                     <button type="submit" className="btn btn-danger btn-lg fw-bold shadow-sm">
