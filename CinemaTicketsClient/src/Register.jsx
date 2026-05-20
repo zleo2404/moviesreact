@@ -14,6 +14,7 @@ export default function Register() {
     });
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
 
@@ -23,6 +24,7 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
         setError('');
         setSuccessMessage('');
 
@@ -37,12 +39,14 @@ export default function Register() {
 
             if (response.ok) {
                 setSuccessMessage(data.message);
-                setTimeout(() => navigate('/login'), 2500);
+                setTimeout(() => navigate('/login'), 2000);
             } else {
                 setError((data.message || 'Error during registration.'));
+                setIsSubmitting(false);
             }
         } catch (err) {
             setError('Server connection error.');
+            setIsSubmitting(false);
         }
     };
 
@@ -95,8 +99,12 @@ export default function Register() {
                                 />
 
                                 <div className="d-grid mt-4">
-                                    <button type="submit" className="btn btn-danger btn-lg fw-bold shadow-sm">
-                                        🍿 Register
+                                    <button 
+                                        type="submit" 
+                                        className="btn btn-danger btn-lg fw-bold shadow-sm"
+                                        disabled={isSubmitting}
+                                    >
+                                        {isSubmitting ? '⏳ Registering...' : '🍿 Register'}
                                     </button>
                                 </div>
                             </form>
