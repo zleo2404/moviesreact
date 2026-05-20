@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import EmptyState from './components/EmptyState';
 import FeedbackMessage from './components/FeedbackMessage';
+import UserRow from './components/UserRow';
 
 export default function UsersList({ currentUser }) {
     const [users, setUsers] = useState([]);
@@ -77,30 +78,7 @@ export default function UsersList({ currentUser }) {
 
                         <tbody>
                             {users.map((user) => (
-                                <tr key={user.id}>
-                                    <td className="fw-bold text-dark ps-4">{user.firstName}</td>
-                                    <td className="fw-bold text-dark">{user.lastName}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.phoneNumber}</td>
-                                    <td>
-                                        {user.role === "Admin" ? (
-                                            <span className="badge bg-danger px-2 py-1">{user.role}</span>
-                                        ) : (
-                                            <span className="badge bg-secondary px-2 py-1">{user.role}</span>
-                                        )}
-                                    </td>
-                                    <td className="pe-4">
-                                        <div className="d-flex justify-content-center gap-2">
-                                            <Link to={`/users/edit/${user.id}`} className="btn btn-sm btn-outline-secondary fw-bold px-3">
-                                                Edit
-                                            </Link>
-                                            
-                                            <Link to={`/users/delete/${user.id}`} className="btn btn-sm btn-dark fw-bold px-3">
-                                                Delete
-                                            </Link>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <UserRow key={user.id} user={user} />
                             ))}
                         </tbody>
 

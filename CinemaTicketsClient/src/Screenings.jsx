@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import EmptyState from './components/EmptyState'
+import ScreeningRow from './components/ScreeningRow';
 
 export default function Screenings({ currentUser }) {
 
@@ -77,37 +78,11 @@ export default function Screenings({ currentUser }) {
 
                         <tbody>
                             {screenings.map((item) => (
-                                <tr key={item.id}>
-                                    <td className="fw-bold text-dark ps-4">
-                                        {item.movieTitle}
-                                    </td>
-                                    <td>
-                                        {new Date(item.startTime).toLocaleString()}
-                                    </td>
-                                    <td>
-                                        {item.cinemaName}
-                                    </td>
-                                    <td className="pe-4">
-                                        <div className="d-flex justify-content-center gap-2">
-                                            {/*
-                                            {canEdit && (
-                                                <Link to={`/screenings/edit/${item.id}`} className="btn btn-sm btn-outline-secondary fw-bold px-3">
-                                                    Edit
-                                                </Link>
-                                            )}*/}
-
-                                            <Link to={`/screenings/details/${item.id}`} className="btn btn-sm btn-danger fw-bold shadow-sm px-3">
-                                                Details
-                                            </Link>
-
-                                            {canEdit && (
-                                                <Link to={`/screenings/delete/${item.id}`} className="btn btn-sm btn-dark fw-bold px-3">
-                                                    Delete
-                                                </Link>
-                                            )}
-                                        </div>
-                                    </td>
-                                </tr>
+                                <ScreeningRow
+                                    key={item.id}
+                                    item={item}
+                                    canEdit={canEdit}
+                                />
                             ))}
                         </tbody>
                     </table>

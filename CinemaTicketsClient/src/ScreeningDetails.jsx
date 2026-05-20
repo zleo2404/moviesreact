@@ -81,13 +81,6 @@ export default function ScreeningDetails({ currentUser }) {
                             <Link to="/screenings" className="btn btn-dark btn-lg px-4 fw-bold shadow-sm me-2">
                                 🔙 Back to List
                             </Link>
-                            
-                            {/* Edit button visible only to Admins 
-                            {canEdit && (
-                                <Link to={`/screenings/edit/${screening.id}`} className="btn btn-danger btn-lg px-4 fw-bold shadow-sm">
-                                    ⚙️ Edit
-                                </Link>
-                            )}*/}
                         </div>
 
                     </div>
