@@ -19,7 +19,6 @@ namespace CinemaTickets.Controllers
         }
 
         // GET: api/Cinemas
-        // Restituisce la lista di tutti i cinema in formato JSON per la tendina di React
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cinema>>> GetCinemas()
         {

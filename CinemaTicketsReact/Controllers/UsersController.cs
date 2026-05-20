@@ -47,7 +47,7 @@ namespace CinemaTickets.Controllers
             var user = await _context.User.FindAsync(id);
             if (user == null)
             {
-                return NotFound(new { message = "Utente non trovato." });
+                return NotFound(new { message = "User not found." });
             }
 
             return user;
@@ -71,7 +71,7 @@ namespace CinemaTickets.Controllers
         {
             if (id != user.Id)
             {
-                return BadRequest(new { message = "ID non corrispondente." });
+                return BadRequest(new { message = "ID mismatch." });
             }
 
             var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -87,7 +87,7 @@ namespace CinemaTickets.Controllers
                 _context.User.Update(user);
                 await _context.SaveChangesAsync();
 
-                // Aggiorna il cookie se l'utente modifica se stesso
+                // Update the cookie if the user modifies themselves
                 if (user.Id.ToString() == loggedInUserId)
                 {
                     var claims = new List<Claim>
@@ -106,19 +106,19 @@ namespace CinemaTickets.Controllers
 
                 return Ok(new
                 {
-                    message = "Profilo aggiornato con successo!",
-                    rowVersion = user.RowVersion // <--- Spediamo la nuova RowVersion a React!
+                    message = "Profile updated successfully!",
+                    rowVersion = user.RowVersion
                 });
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!UserExists(id))
                 {
-                    return NotFound(new { message = "Utente non trovato." });
+                    return NotFound(new { message = "User not found." });
                 }
                 else
                 {
-                    return Conflict(new { message = "I dati sono stati modificati da un altro utente. Ricarica la pagina." });
+                    return Conflict(new { message = "The data has been modified by another user. Please reload the page." });
                 }
             }
         }
@@ -131,7 +131,7 @@ namespace CinemaTickets.Controllers
             var user = await _context.User.FindAsync(id);
             if (user == null)
             {
-                return NotFound(new { message = "Impossibile eliminare: l'utente è già stato eliminato." });
+                return NotFound(new { message = "Cannot delete: the user has already been deleted." });
             }
 
             try
@@ -143,11 +143,11 @@ namespace CinemaTickets.Controllers
 
                 _context.User.Remove(user);
                 await _context.SaveChangesAsync();
-                return Ok(new { message = "Utente eliminato correttamente." });
+                return Ok(new { message = "User deleted successfully." });
             }
             catch (DbUpdateConcurrencyException)
             {
-                return Conflict(new { message = "Impossibile eliminare: l'utente è stato modificato da un altro admin." });
+                return Conflict(new { message = "Cannot delete: the user has been modified by another admin." });
             }
         }
 
@@ -155,14 +155,14 @@ namespace CinemaTickets.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(User user)
         {
-            // Rimuoviamo controlli di validazione non necessari per il payload in arrivo
+            // Remove unnecessary validation checks for the incoming payload
             ModelState.Remove("Role");
             ModelState.Remove("RowVersion");
 
             var userExists = await _context.User.AnyAsync(u => u.Email == user.Email);
             if (userExists)
             {
-                return BadRequest(new { message = "Questa email è già in uso." });
+                return BadRequest(new { message = "This email is already in use." });
             }
 
             user.Role = "User";
@@ -170,7 +170,7 @@ namespace CinemaTickets.Controllers
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Utente registrato con successo. Ora puoi effettuare il login!" });
+            return Ok(new { message = "User registered successfully. You can now log in!" });
         }
 
         // POST: api/Users/login
@@ -182,7 +182,7 @@ namespace CinemaTickets.Controllers
 
             if (user == null)
             {
-                return Unauthorized(new { message = "Email o password non validi." });
+                return Unauthorized(new { message = "Invalid email or password." });
             }
 
             var claims = new List<Claim>
@@ -198,10 +198,9 @@ namespace CinemaTickets.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            // Restituiamo i dati dell'utente per React
             return Ok(new
             {
-                message = "Login effettuato con successo",
+                message = "Login successful",
                 user = new { user.Id, user.FirstName, user.LastName, user.Role }
             });
         }
@@ -212,7 +211,7 @@ namespace CinemaTickets.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return Ok(new { message = "Logout effettuato con successo." });
+            return Ok(new { message = "Logout successful." });
         }
 
         private bool UserExists(int id)

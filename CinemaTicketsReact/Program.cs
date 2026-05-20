@@ -1,16 +1,15 @@
-using CinemaTickets.Data; // ASSICURATI che questo sia il namespace corretto per il tuo context
+using CinemaTickets.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. IL DATABASE (Questa è la riga che mancava e che causava l'errore!)
 builder.Services.AddDbContext<CinemaTicketsContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CinemaTicketsContext")
     ?? throw new InvalidOperationException("Connection string not found.")));
 
-// 2. LA SICUREZZA (Cookie per le API)
+//Cookie for the API
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -29,16 +28,16 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         };
     });
 
-// 3. CONFIGURAZIONE CORS (Il passaporto per far funzionare React su porta 5173)
+// CORS configuration
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowReactApp", // (O qualunque nome tu gli abbia dato)
+    options.AddPolicy("AllowReactApp",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173", "https://localhost:5173") // <--- AGGIUNGI LA VERSIONE HTTPS QUI!
+            policy.WithOrigins("http://localhost:5173", "https://localhost:5173")
                   .AllowAnyHeader()
                   .AllowAnyMethod()
-                  .AllowCredentials(); // <--- Assicurati che questo ci sia sempre per i Cookie!
+                  .AllowCredentials(); //for the manage of cookies
         });
 });
 
@@ -55,10 +54,8 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
-// ORDINE CRITICO DEI MIDDLEWARE
 app.UseRouting();
 
-// Il CORS deve stare qui!
 app.UseCors("AllowReactApp");
 
 
