@@ -37,13 +37,13 @@ export default function Register() {
             const data = await response.json();
 
             if (response.ok) {
-                setSuccessMessage("✅ " + data.message);
+                setSuccessMessage(data.message);
                 setTimeout(() => navigate('/login'), 2500);
             } else {
-                setError("❌ " + (data.message || 'Error during registration.'));
+                setError((data.message || 'Error during registration.'));
             }
         } catch (err) {
-            setError('❌ Server connection error.');
+            setError('Server connection error.');
         }
     };
 

@@ -72,16 +72,16 @@ export default function EditUser({ currentUser, setCurrentUser }) {
                     // updates the form with the new database signature for the next click
                     setFormData(prev => ({ ...prev, rowVersion: newRowVersion }));
                 }
-                setSuccessMessage("✅ " + data.message);
+                setSuccessMessage(data.message);
             } else if (response.status === 409) {
                 //Another user has modified the data in the meantime
-                setError("❌ " + data.message);
+                setError(data.message);
                 setIsConflict(true);
             } else {
-                setError("❌ " + (data.message || 'Error during save.'));
+                setError((data.message || 'Error during save.'));
             }
         } catch (err) {
-            setError('❌ Server connection error.');
+            setError('Server connection error.');
         }
     };
 
