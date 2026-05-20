@@ -4,22 +4,19 @@ import { useNavigate, Link } from 'react-router-dom';
 export default function CreateScreening({ currentUser }) {
     const navigate = useNavigate();
 
-    // 1. Stato per i dati del form
     const [formData, setFormData] = useState({
         movieTitle: '',
         startTime: '',
         cinemaId: ''
     });
 
-    // 2. Stato per riempire la tendina dei Cinema (equivalente al ViewBag di C#)
     const [cinemas, setCinemas] = useState([]);
     const [error, setError] = useState('');
 
-    // Recuperiamo la lista dei Cinema all'avvio della pagina
+    //retrieve list of cinemas for the select
     useEffect(() => {
         const fetchCinemas = async () => {
             try {
-                // Assicurati che l'indirizzo /api/Cinemas esista nel tuo backend C#!
                 const response = await fetch('https://localhost:7275/api/Cinemas', {
                     credentials: 'include'
                 });
@@ -28,19 +25,17 @@ export default function CreateScreening({ currentUser }) {
                     setCinemas(data);
                 }
             } catch (err) {
-                console.error("Errore nel caricamento dei cinema", err);
+                console.error("Error uploading cinemas", err);
             }
         };
 
         fetchCinemas();
     }, []);
 
-    // Gestione della digitazione nei campi
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // 3. Invio dei dati al C# per creare la proiezione
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -52,26 +47,25 @@ export default function CreateScreening({ currentUser }) {
                 body: JSON.stringify({
                     movieTitle: formData.movieTitle,
                     startTime: formData.startTime,
-                    cinemaId: parseInt(formData.cinemaId) // Trasformiamo l'ID in numero
+                    cinemaId: parseInt(formData.cinemaId)
                 }),
-                credentials: 'include' // Obbligatorio se c'è [Authorize(Roles="Admin")]
+                credentials: 'include'
             });
 
             if (response.ok) {
-                // Se ha successo, torniamo alla lista delle proiezioni
                 navigate('/screenings');
             } else {
                 const errorData = await response.json();
-                setError(errorData.message || 'Errore durante la creazione.');
+                setError(errorData.message || 'Errore creating a screening.');
             }
         } catch (err) {
-            setError('Errore di connessione al server.');
+            setError('Error connecting with the server.');
         }
     };
 
-    // Sicurezza: Se non sei admin, non dovresti nemmeno vedere questa pagina
+    //Only admin can see the page
     if (!currentUser || currentUser.role !== 'Admin') {
-        return <h3 className="text-center mt-5 text-danger">Accesso Negato. Solo gli Admin possono creare proiezioni.</h3>;
+        return <h3 className="text-center mt-5 text-danger">Only admin can visit this page.</h3>;
     }
 
     return (

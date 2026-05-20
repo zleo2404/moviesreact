@@ -5,13 +5,11 @@ export default function Home({ currentUser }) {
         <div className="d-flex align-items-center justify-content-center w-100" style={{ minHeight: '75vh' }}>
             <div className="row align-items-center w-100">
                 
-                {/* COLONNA SINISTRA (Testo e Azioni) */}
                 <div className="col-md-6 text-center text-md-start mb-5 mb-md-0">
                     <h1 className="display-3 fw-bold text-danger mb-3">
                         🎬 Welcome to CinemaTickets!
                     </h1>
                     
-                    {/* Controllo se l'utente è loggato */}
                     {currentUser ? (
                         <>
                             <h3 className="mb-4 text-dark">
@@ -20,7 +18,6 @@ export default function Home({ currentUser }) {
                             </h3>
 
                             <div className="mt-4">
-                                {/* Controllo Ruolo: Admin o Utente Base */}
                                 {currentUser.role === "Admin" ? (
                                     <div className="card shadow-lg border-dark mx-auto mx-md-0" style={{ maxWidth: '400px' }}>
                                         <div className="card-header bg-dark text-white">
@@ -49,7 +46,7 @@ export default function Home({ currentUser }) {
                             </div>
                         </>
                     ) : (
-                        // Contenuto per i visitatori NON loggati
+                        
                         <>
                             <p className="lead mb-4 text-dark fw-bold">
                                 Discover currently showing movies and book your seat conveniently online.
@@ -67,7 +64,6 @@ export default function Home({ currentUser }) {
                     )}
                 </div>
 
-                {/* COLONNA DESTRA (Immagine) */}
                 <div className="col-md-6 text-center">
                     <img 
                         src="/img/home.jpg" 

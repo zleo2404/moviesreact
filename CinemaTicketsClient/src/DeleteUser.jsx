@@ -10,7 +10,6 @@ export default function DeleteUser({ currentUser }) {
     const [isConflict, setIsConflict] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
-    // 1. CARICA I DATI DELL'UTENTE
     useEffect(() => {
         if (!currentUser || currentUser.role !== 'Admin') {
             navigate('/');
@@ -27,19 +26,18 @@ export default function DeleteUser({ currentUser }) {
                     const data = await response.json();
                     setUser(data);
                 } else {
-                    setError('Utente non trovato o accesso negato.');
+                    setError('User not found or access denied.');
                 }
             } catch (err) {
-                setError('Errore di connessione al server.');
+                setError('Server connection error.');
             }
         };
 
         fetchUser();
     }, [id, currentUser, navigate]);
 
-    // 2. CONFERMA L'ELIMINAZIONE
     const handleDelete = async (e) => {
-        e.preventDefault(); // Evita il ricaricamento della pagina dal form
+        e.preventDefault();
         setIsDeleting(true);
         setError('');
         setIsConflict(false);
@@ -48,32 +46,32 @@ export default function DeleteUser({ currentUser }) {
             const response = await fetch(`https://localhost:7123/api/Users/${id}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(user.rowVersion), // Invio la firma di concorrenza
+                body: JSON.stringify(user.rowVersion), // Sending the concurrency signature
                 credentials: 'include'
             });
 
             if (response.ok) {
                 navigate('/users');
             } else if (response.status === 409) {
-                setError('Impossibile eliminare: i dati sono stati modificati da un altro utente.');
+                setError('Cannot delete: the data has been modified by another user.');
                 setIsConflict(true);
                 setIsDeleting(false);
             } else {
                 const data = await response.json();
-                setError(`Errore: ${data.message || 'impossibile eliminare.'}`);
+                setError(`Error: ${data.message || 'unable to delete.'}`);
                 setIsDeleting(false);
             }
         } catch (err) {
-            setError('Errore di connessione al server.');
+            setError('Server connection error.');
             setIsDeleting(false);
         }
     };
 
-    // Ricarica la pagina in caso di conflitto
+    // Reloads the page in case of a conflict
     const handleRefresh = () => window.location.reload();
 
     if (!user && !error) {
-        return <div className="text-center mt-5"><h4>Caricamento dati utente... ⏳</h4></div>;
+        return <div className="text-center mt-5"><h4>Loading user data... ⏳</h4></div>;
     }
 
     return (
@@ -92,7 +90,7 @@ export default function DeleteUser({ currentUser }) {
                                 <p className="mb-0 text-dark">Are you absolutely sure you want to delete this user? This action cannot be undone and will remove their access to the system.</p>
                             </div>
 
-                            {/* Mostra gli errori e il tasto refresh se c'è un conflitto */}
+                            {/* Shows errors and the refresh button if there is a conflict */}
                             {error && (
                                 <div className="text-danger text-center mb-4 fw-bold">
                                     ❌ {error}
@@ -108,7 +106,7 @@ export default function DeleteUser({ currentUser }) {
                             
                             <h5 className="text-dark fw-bold mb-4 border-bottom border-danger pb-2">User Information</h5>
                             
-                            {/* La tua struttura a griglia (Description List) */}
+                            {/* Your grid structure (Description List) */}
                             <dl className="row fs-5">
                                 <dt className="col-sm-4 text-dark text-md-end">Full Name</dt>
                                 <dd className="col-sm-8 fw-bold text-dark">

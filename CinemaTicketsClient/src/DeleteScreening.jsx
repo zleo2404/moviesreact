@@ -10,21 +10,20 @@ export default function DeleteScreening({ currentUser }) {
     const [error, setError] = useState('');
     const [isDeleting, setIsDeleting] = useState(false);
 
-    // 1. CARICAMENTO DEI DATI DELLA PROIEZIONE
     useEffect(() => {
         const fetchScreening = async () => {
             try {
-                // Assicurati che questo endpoint (GET) esista nel tuo C#
+
                 const response = await fetch(`https://localhost:7275/api/Screenings/${id}`);
                 
                 if (response.ok) {
                     const data = await response.json();
                     setScreening(data);
                 } else {
-                    setError('Proiezione non trovata o già eliminata.');
+                    setError('Screening not found or eliminated.');
                 }
             } catch (err) {
-                setError('Errore di connessione al server.');
+                setError('Error connecting to the server.');
             } finally {
                 setLoading(false);
             }
@@ -33,47 +32,45 @@ export default function DeleteScreening({ currentUser }) {
         fetchScreening();
     }, [id]);
 
-    // 2. FUNZIONE PER ELIMINARE DEFINITIVAMENTE
     const handleDelete = async (e) => {
-        e.preventDefault(); // Previene il ricaricamento della pagina del tag form
+        e.preventDefault();
         setIsDeleting(true);
         setError('');
 
         try {
-            // Chiamata DELETE al server C#
+
             const response = await fetch(`https://localhost:7275/api/Screenings/${id}`, {
                 method: 'DELETE',
-                credentials: 'include' // Obbligatorio se c'è [Authorize(Roles="Admin")] nel server
+                credentials: 'include'
             });
 
             if (response.ok) {
-                // Se l'eliminazione ha successo, torna alla lista
                 navigate('/screenings');
             } else {
                 const data = await response.json().catch(() => ({}));
-                setError(data.message || 'Errore durante l\'eliminazione della proiezione.');
+                setError(data.message || 'Error deleting the screening');
                 setIsDeleting(false);
             }
         } catch (err) {
-            setError('Errore di connessione al server.');
+            setError('Error connecting to the server.');
             setIsDeleting(false);
         }
     };
 
-    // Sicurezza: Solo gli Admin possono eliminare
+    //Only admin can delete a screening
     if (!currentUser || currentUser.role !== 'Admin') {
-        return <h3 className="text-center mt-5 text-danger">Accesso Negato. Solo gli Admin possono eliminare.</h3>;
+        return <h3 className="text-center mt-5 text-danger">Acces Denied. Only admins can delete.</h3>;
     }
 
     if (loading) {
-        return <h3 className="text-center mt-5">Caricamento dettagli... ⏳</h3>;
+        return <h3 className="text-center mt-5">Uploding screenings... ⏳</h3>;
     }
 
     if (error && !screening) {
         return (
             <div className="container mt-5 text-center">
                 <div className="alert alert-danger">{error}</div>
-                <Link to="/screenings" className="btn btn-dark mt-3">Torna alla Lista</Link>
+                <Link to="/screenings" className="btn btn-dark mt-3">Go back to the list</Link>
             </div>
         );
     }

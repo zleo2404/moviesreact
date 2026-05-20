@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 export default function EditUser({ currentUser, setCurrentUser}) {
-    const { id } = useParams(); // Prende l'ID dall'URL (es. /users/edit/5)
+    const { id } = useParams();
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -13,14 +13,13 @@ export default function EditUser({ currentUser, setCurrentUser}) {
         phoneNumber: '',
         password: '',
         role: '',
-        rowVersion: '' // Qui salveremo la "firma" per la concorrenza
+        rowVersion: '' 
     });
 
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    const [isConflict, setIsConflict] = useState(false); // Gestisce la comparsa del tasto Refresh
+    const [isConflict, setIsConflict] = useState(false);
 
-    // 1. CARICAMENTO DATI INIZIALI DAL SERVER
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -32,10 +31,10 @@ export default function EditUser({ currentUser, setCurrentUser}) {
                     const data = await response.json();
                     setFormData(data);
                 } else {
-                    setError('Impossibile caricare i dati dell\'utente.');
+                    setError('Unable to load user data.');
                 }
             } catch (err) {
-                setError('Errore di connessione al server.');
+                setError('Server connection error.');
             }
         };
 
@@ -46,7 +45,6 @@ export default function EditUser({ currentUser, setCurrentUser}) {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // 2. SALVATAGGIO DELLE MODIFICHE
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -58,35 +56,34 @@ export default function EditUser({ currentUser, setCurrentUser}) {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
-                credentials: 'include' // Fondamentale per far capire al server chi siamo
+                credentials: 'include'
             });
 
             const data = await response.json();
 
             if (response.ok) {
                 if (currentUser && currentUser.id === parseInt(id)) {
-                // Update the global state with the new form data
                 setCurrentUser({ ...currentUser, ...formData });
     }
                 const newRowVersion = data.rowVersion || data.RowVersion; 
     if (newRowVersion) {
-        // Aggiorna il form con la nuova firma del database per il prossimo click!
+        // updates the form with the new database signature for the next click
         setFormData(prev => ({ ...prev, rowVersion: newRowVersion }));
     }
                 setSuccessMessage("✅ " + data.message);
             } else if (response.status === 409) {
-                // ERRORE DI CONCORRENZA: Un altro utente ha modificato i dati nel frattempo
+                //Another user has modified the data in the meantime
                 setError("❌ " + data.message);
                 setIsConflict(true);
             } else {
-                setError("❌ " + (data.message || 'Errore durante il salvataggio.'));
+                setError("❌ " + (data.message || 'Error during save.'));
             }
         } catch (err) {
-            setError('❌ Errore di connessione al server.');
+            setError('❌ Server connection error.');
         }
     };
 
-    // Funzione per ricaricare i dati in caso di conflitto (ricarica la pagina)
+    // Function to reload data in case of conflict (reloads the page)
     const handleRefresh = () => {
         window.location.reload();
     };
@@ -115,7 +112,7 @@ export default function EditUser({ currentUser, setCurrentUser}) {
                         
                         <div className="card-body p-5 bg-light">
                             
-                            {/* Tasto Refresh che compare solo in caso di conflitto di RowVersion */}
+                            {/* Refresh button that appears only in case of RowVersion conflict */}
                             {isConflict && (
                                 <div className="text-center mb-4">
                                     <button onClick={handleRefresh} type="button" className="btn btn-danger fw-bold">
@@ -185,7 +182,6 @@ export default function EditUser({ currentUser, setCurrentUser}) {
                                     </div>
                                 </div>
 
-                                {/* Nel tuo codice originale era type="text", lo lascio così ma puoi metterlo a "password" */}
                                 <div className="mb-3">
                                     <label className="form-label fw-bold text-dark">Password</label>
                                     <div className="input-group">
@@ -201,7 +197,7 @@ export default function EditUser({ currentUser, setCurrentUser}) {
                                     </div>
                                 </div>
 
-                                {/* Controllo Ruolo: visibile e modificabile SOLO se l'utente loggato è un Admin */}
+                                {/*visible and editable ONLY if the logged user is an Admin */}
                                 {currentUser && currentUser.role === 'Admin' && (
                                     <div className="mb-3">
                                         <label className="form-label fw-bold text-dark">Role</label>
