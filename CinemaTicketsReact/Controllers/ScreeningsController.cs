@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CinemaTickets.DTOs;
+using CinemaTicketsReact.DTOs;
 
 namespace CinemaTickets.Controllers
 {
@@ -40,23 +40,36 @@ namespace CinemaTickets.Controllers
 
         // GET: api/Screenings/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ScreeningDTO>> GetScreening(int id)
+        public async Task<ActionResult<ScreeningDetailsDTO>> GetScreening(int id)
         {
             var screening = await _context.Screening
                 .Include(s => s.Cinema)
+                .Include(s => s.Reservations)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (screening == null)
             {
                 return NotFound(new { message = "Screening not found." });
             }
-
-            var dto = new ScreeningDTO
+            var dto = new ScreeningDetailsDTO
             {
                 Id = screening.Id,
                 MovieTitle = screening.MovieTitle,
                 StartTime = screening.StartTime,
-                CinemaName = screening.Cinema != null ? screening.Cinema.Name : "N/A"
+
+                Cinema = screening.Cinema != null ? new CinemaDetailsDTO
+                {
+                    Name = screening.Cinema.Name,
+                    Rows = screening.Cinema.Rows,
+                    SeatsPerRow = screening.Cinema.SeatsPerRow
+                } : null,
+                Reservations = screening.Reservations?.Select(r => new ReservationDTO
+                {
+                    Id = r.Id,
+                    RowX = r.RowX,
+                    SeatY = r.SeatY,
+                    UserId = r.UserId
+                }).ToList() ?? new List<ReservationDTO>()
             };
 
             return dto;
