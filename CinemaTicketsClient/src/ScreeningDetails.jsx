@@ -170,9 +170,6 @@ export default function ScreeningDetails() {
 
                         <div className="card-footer text-center py-4 bg-white border-top-0">
                             <Link to="/screenings" className="btn btn-dark btn-lg px-4 fw-bold shadow-sm me-2">🔙 Back to List</Link>
-                            {canEdit && (
-                                <Link to={`/screenings/edit/${screening.id}`} className="btn btn-danger btn-lg px-4 fw-bold shadow-sm">⚙️ Edit</Link>
-                            )}
                         </div>
                     </div>
                 </div>

@@ -13,6 +13,7 @@ import CreateScreening from './CreateScreening';
 import DeleteScreening from './DeleteScreening';
 import DetailsScreening from './ScreeningDetails';
 import ConfirmBooking from './ConfirmBook';
+import ConfirmDeletion from './DeleteBook';
 
 export default function App() {
   
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="screenings/details/:id" element={<DetailsScreening />} />
 
         <Route path="reservations/book/:id" element={<ConfirmBooking />} />
+        <Route path="reservations/delete/:id" element={<ConfirmDeletion />} /> 
         
       </Route>
     </Routes>

@@ -21,6 +21,38 @@ namespace CinemaTickets.Controllers
             _context = context;
         }
 
+        // GET: api/Reservations/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetReservation(int id)
+        {
+            var reservation = await _context.Reservation
+                .Include(r => r.Screening)
+                .ThenInclude(s => s.Cinema)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (reservation == null)
+            {
+                return NotFound(new { message = "Reservation not found." });
+            }
+
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (reservation.UserId.ToString() != currentUserId && !User.IsInRole("Admin"))
+            {
+                return StatusCode(403, new { message = "You do not have permission to view this reservation." });
+            }
+
+            return Ok(new
+            {
+                id = reservation.Id,
+                screeningId = reservation.ScreeningId,
+                movieTitle = reservation.Screening.MovieTitle,
+                startTime = reservation.Screening.StartTime,
+                cinemaName = reservation.Screening.Cinema.Name,
+                rowX = reservation.RowX,
+                seatY = reservation.SeatY
+            });
+        }
+
         // POST: api/Reservations
         [HttpPost]
         public async Task<IActionResult> CreateReservation(ReservationInputDTO dto)
@@ -68,7 +100,7 @@ namespace CinemaTickets.Controllers
             var reservation = await _context.Reservation.FindAsync(id);
             if (reservation == null)
             {
-                return NotFound(new { message = "Reservation not found." });
+                return NotFound(new { message = "Reservation already deleted or not found." });
             }
 
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -78,9 +110,20 @@ namespace CinemaTickets.Controllers
             }
 
             _context.Reservation.Remove(reservation);
-            await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Ticket successfully cancelled. The seat is now available." });
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Ticket successfully cancelled. The seat is now available." });
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return NotFound(new { message = "This reservation was already cancelled by another request." });
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(500, new { message = "An error occurred while deleting the ticket from the database." });
+            }
         }
     }
 }
