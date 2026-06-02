@@ -47,7 +47,7 @@ export default function ScreeningDetails() {
                         key={`${row}-${seat}`}
                         onClick={() => navigate(`/reservations/delete/${reservation.id}`)}
                         className="btn btn-sm btn-danger fw-bold shadow-sm" 
-                        style={{ width: '40px', height: '40px' }}
+                        style={{ width: '50px', height: '50px' }}
                         title="Cancel your reservation"
                     >
                         You
@@ -58,7 +58,7 @@ export default function ScreeningDetails() {
                     <button 
                         key={`${row}-${seat}`}
                         className="btn btn-sm btn-secondary fw-bold disabled" 
-                        style={{ width: '40px', height: '40px' }}
+                        style={{ width: '50px', height: '50px' }}
                     >
                         X
                     </button>
@@ -71,7 +71,7 @@ export default function ScreeningDetails() {
                 key={`${row}-${seat}`}
                 onClick={() => navigate(`/reservations/book/${screening.id}?row=${row}&seat=${seat}`)}
                 className={`btn btn-sm btn-outline-success fw-bold ${!user ? 'disabled' : ''}`}
-                style={{ width: '40px', height: '40px' }}
+                style={{ width: '50px', height: '50px' }}
                 disabled={!user}
             >
                 {seat}
