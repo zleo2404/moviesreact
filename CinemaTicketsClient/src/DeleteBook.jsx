@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import FeedbackMessage from './components/FeedbackMessage';
 
@@ -11,28 +11,28 @@ export default function ConfirmDeletion() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
 
-    const loadReservationDetails = useCallback(async () => {
-        try {
-            const response = await fetch(`https://localhost:7275/api/Reservations/${id}`, {
-                credentials: 'include'
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                setReservation(data);
-            } else {
-                setError(data.message || 'Error loading reservation details.');
-            }
-        } catch (err) {
-            setError('Server connection error.');
-        } finally {
-            setIsLoading(false);
-        }
-    }, [id]);
-
     useEffect(() => {
-        loadReservationDetails();
-    }, [loadReservationDetails]);
+        const loadScreeningDetails = async () => {
+            try {
+                const response = await fetch(`https://localhost:7275/api/Reservations/${id}`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    setReservation(data);
+                } else {
+                    setError(data.message || 'Error loading details.');
+                }
+            } catch (err) {
+                setError('Server connection error.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadScreeningDetails();
+    }, [id]);
 
     const handleDelete = async () => {
         setIsSubmitting(true);

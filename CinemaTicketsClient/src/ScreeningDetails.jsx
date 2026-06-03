@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import FeedbackMessage from './components/FeedbackMessage';
@@ -12,28 +12,28 @@ export default function ScreeningDetails() {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
-    const loadScreeningDetails = useCallback(async () => {
-        try {
-            const response = await fetch(`https://localhost:7275/api/Screenings/${id}`, {
-                credentials: 'include'
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                setScreening(data);
-            } else {
-                setError(data.message || 'Error loading screening details.');
-            }
-        } catch (err) {
-            setError('Server connection error.');
-        } finally {
-            setIsLoading(false);
-        }
-    }, [id]);
-
     useEffect(() => {
+        const loadScreeningDetails = async () => {
+            try {
+                const response = await fetch(`https://localhost:7275/api/Screenings/${id}`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    setScreening(data);
+                } else {
+                    setError(data.message || 'Error loading screening details.');
+                }
+            } catch (err) {
+                setError('Server connection error.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
         loadScreeningDetails();
-    }, [loadScreeningDetails]);
+    }, [id]);
 
     const renderSeat = (row, seat) => {
         const reservation = screening.reservations?.find(

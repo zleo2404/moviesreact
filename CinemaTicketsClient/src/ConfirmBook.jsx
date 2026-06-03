@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import FeedbackMessage from './components/FeedbackMessage';
 
@@ -18,7 +18,8 @@ export default function ConfirmBooking() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
 
-    const loadScreeningDetails = useCallback(async () => {
+    useEffect(() => {
+    const loadScreeningDetails = async () => {
         try {
             const response = await fetch(`https://localhost:7275/api/Screenings/${id}`, {
                 credentials: 'include'
@@ -35,11 +36,10 @@ export default function ConfirmBooking() {
         } finally {
             setIsLoading(false);
         }
-    }, [id]);
+    };
 
-    useEffect(() => {
-        loadScreeningDetails();
-    }, [loadScreeningDetails]);
+    loadScreeningDetails();
+}, [id]);
 
     const handleConfirmBooking = async () => {
         setIsSubmitting(true);
