@@ -19,7 +19,7 @@ export default function CreateScreening() {
     useEffect(() => {
         const fetchCinemas = async () => {
             try {
-                const response = await fetch('https://localhost:7275/api/Cinemas', {
+                const response = await fetch('/api/Cinemas', {
                     credentials: 'include'
                 });
                 if (response.ok) {
@@ -43,7 +43,7 @@ export default function CreateScreening() {
         setError('');
 
         try {
-            const response = await fetch('https://localhost:7275/api/Screenings', {
+            const response = await fetch('/api/Screenings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

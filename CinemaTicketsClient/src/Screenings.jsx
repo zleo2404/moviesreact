@@ -16,7 +16,7 @@ export default function Screenings() {
     useEffect(() => {
         const fetchScreenings = async () => {
             try {
-                const response = await fetch('https://localhost:7275/api/Screenings');
+                const response = await fetch('/api/Screenings');
 
                 if (response.ok) {
                     const data = await response.json();

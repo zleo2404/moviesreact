@@ -15,7 +15,7 @@ export default function DeleteScreening() {
 
     const loadScreeningData = useCallback(async () => {
         try {
-            const response = await fetch(`https://localhost:7275/api/Screenings/${id}`);
+            const response = await fetch(`/api/Screenings/${id}`);
             
             if (response.ok) {
                 setScreening(await response.json());
@@ -45,7 +45,7 @@ export default function DeleteScreening() {
         setIsConflict(false);
         
         try {
-            const response = await fetch(`https://localhost:7275/api/Screenings/${id}`, {
+            const response = await fetch(`/api/Screenings/${id}`, {
                 method: 'DELETE', 
                 credentials: 'include'
             });

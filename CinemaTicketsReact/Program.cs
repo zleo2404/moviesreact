@@ -9,7 +9,6 @@ builder.Services.AddDbContext<CinemaTicketsContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CinemaTicketsContext")
     ?? throw new InvalidOperationException("Connection string not found.")));
 
-//Cookie for the API
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -28,40 +27,26 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         };
     });
 
-// CORS configuration
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowReactApp",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:5173", "https://localhost:5173")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials(); //for the manage of cookies
-        });
-});
-
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
-
 app.UseHttpsRedirection();
+
+app.UseDefaultFiles(new DefaultFilesOptions
+{
+    DefaultFileNames = ["index.html"]
+});
+
+app.UseStaticFiles();
+
 app.UseRouting();
-
-app.UseCors("AllowReactApp");
-
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapFallbackToFile("index.html");
 
 app.Run();

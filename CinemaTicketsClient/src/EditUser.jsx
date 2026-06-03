@@ -27,7 +27,7 @@ export default function EditUser() {
 
     const loadUserData = useCallback(async () => {
         try {
-            const response = await fetch(`https://localhost:7275/api/Users/${id}`, {
+            const response = await fetch(`/api/Users/${id}`, {
                 credentials: 'include'
             });
 
@@ -59,7 +59,7 @@ export default function EditUser() {
         setIsConflict(false);
 
         try {
-            const response = await fetch(`https://localhost:7275/api/Users/${id}`, {
+            const response = await fetch(`/api/Users/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),

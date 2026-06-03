@@ -14,7 +14,7 @@ export default function ConfirmDeletion() {
     useEffect(() => {
         const loadScreeningDetails = async () => {
             try {
-                const response = await fetch(`https://localhost:7275/api/Reservations/${id}`, {
+                const response = await fetch(`/api/Reservations/${id}`, {
                     credentials: 'include'
                 });
                 const data = await response.json();
@@ -39,7 +39,7 @@ export default function ConfirmDeletion() {
         setError('');
 
         try {
-            const response = await fetch(`https://localhost:7275/api/Reservations/${id}`, {
+            const response = await fetch(`/api/Reservations/${id}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });

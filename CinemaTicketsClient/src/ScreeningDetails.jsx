@@ -15,7 +15,7 @@ export default function ScreeningDetails() {
     useEffect(() => {
         const loadScreeningDetails = async () => {
             try {
-                const response = await fetch(`https://localhost:7275/api/Screenings/${id}`, {
+                const response = await fetch(`/api/Screenings/${id}`, {
                     credentials: 'include'
                 });
                 const data = await response.json();

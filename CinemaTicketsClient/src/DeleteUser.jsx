@@ -15,7 +15,7 @@ export default function DeleteUser() {
 
     const loadUserData = useCallback(async () => {
         try {
-            const response = await fetch(`https://localhost:7275/api/Users/${id}`, { 
+            const response = await fetch(`/api/Users/${id}`, { 
                 credentials: 'include' 
             });
             
@@ -47,7 +47,7 @@ export default function DeleteUser() {
         setIsConflict(false);
         
         try {
-            const response = await fetch(`https://localhost:7275/api/Users/${id}`, {
+            const response = await fetch(`/api/Users/${id}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(user?.rowVersion || user?.RowVersion || ''), 

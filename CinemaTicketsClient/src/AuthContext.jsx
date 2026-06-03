@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
 
     const logout = async (navigateCallback) => {
         try {
-            await fetch('https://localhost:7275/api/Users/logout', { 
+            await fetch('/api/Users/logout', { 
                 method: 'POST', 
                 credentials: 'include' 
             });

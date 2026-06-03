@@ -21,7 +21,7 @@ export default function ConfirmBooking() {
     useEffect(() => {
     const loadScreeningDetails = async () => {
         try {
-            const response = await fetch(`https://localhost:7275/api/Screenings/${id}`, {
+            const response = await fetch(`/api/Screenings/${id}`, {
                 credentials: 'include'
             });
             const data = await response.json();
@@ -46,7 +46,7 @@ export default function ConfirmBooking() {
         setError('');
 
         try {
-            const response = await fetch('https://localhost:7275/api/Reservations', {
+            const response = await fetch('/api/Reservations', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
