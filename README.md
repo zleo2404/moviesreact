@@ -1,92 +1,150 @@
-# Empty
+# Cinema Tickets
 
+Cinema Tickets is a full-stack web application designed for browsing movie screenings, booking tickets, and managing complex multi-user reservations.
 
+The project is built on a modern client-server architecture, featuring a dynamic frontend developed in React (`CinemaTicketsClient`) and a robust RESTful API backend developed in C# with ASP.NET Core (`CinemaTicketsReact`).
 
-## Getting started
+The application was developed with a strong focus on separation of concerns, concurrent session handling, and advanced user management, keeping the codebase modular, extensible, and secure.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Requirements
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+* Node.js (v16 or higher) and npm (for the React client)
 
-## Add your files
+* .NET SDK (v6.0 or higher, for the ASP.NET Core backend)
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+* SQL Server (or LocalDB) for Entity Framework Core database
+
+## Getting Started
+
+To run the backend server from source:
 
 ```
-cd existing_repo
-git remote add origin https://gitlab-stud.elka.pw.edu.pl/wgr/empty.git
-git branch -M main
-git push -uf origin main
+cd CinemaTicketsReact
+dotnet restore
+dotnet ef database update
+dotnet run
+
 ```
 
-## Integrate with your tools
+To run the frontend client:
 
-- [ ] [Set up project integrations](https://gitlab-stud.elka.pw.edu.pl/wgr/empty/-/settings/integrations)
+```
+cd CinemaTicketsClient
+npm install
+npm run dev
 
-## Collaborate with your team
+```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+The frontend will typically be served at `http://localhost:5173`, and the backend API will run on its configured local port.
 
-## Test and Deploy
+## Features
 
-Use the built-in continuous integration in GitLab.
+**Multi-User Booking:**
+* Concurrent seat reservation handling to support multiple users booking screenings simultaneously without data conflicts.
+* Real-time validation checks ensuring seat availability and preventing double-booking across different user sessions.
+* Comprehensive reservation tracking allowing users to review, update, or cancel their multi-ticket bookings.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+**User & Account Management Across Sessions:**
+* Support for concurrent edits and state changes to the same user profile from different accounts/sessions with proper authorization checks.
+* Administrative capabilities to oversee user accounts, modify roles, and handle cross-account data updates (`EditUser`, `DeleteUser`).
+* Secure session management via `AuthContext` tracking active states across multiple client instances.
 
-***
+**Additional User & Admin Capabilities:**
+* Browse available cinemas and movie screenings.
+* Register and Log in to a personal account.
+* Create and manage new movie screenings (`CreateScreening`, `DeleteScreening`).
+* Cancel bookings (`DeleteBook`).
 
-# Editing this README
+## Build and Test
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+**Compile and build the backend project:**
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+```
+cd CinemaTicketsReact
+dotnet build
 
-## Name
-Choose a self-explaining name for your project.
+```
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+**Build the frontend for production:**
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+```
+cd CinemaTicketsClient
+npm run build
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## Project Structure
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+```
+.
+├── CinemaTicketsClient/           React Frontend Application
+│   ├── public/                    Static assets (images, icons)
+│   ├── src/
+│   │   ├── assets/                Application assets (logos, UI graphics)
+│   │   ├── components/            Reusable UI components (FormInput, UserRow, etc.)
+│   │   ├── App.jsx                Main frontend routing component
+│   │   ├── AuthContext.jsx        Global authentication state management
+│   │   ├── Home.jsx               Landing page
+│   │   ├── Login.jsx / Register.jsx Authentication views
+│   │   ├── Screenings.jsx         Movie screenings view
+│   │   └── main.jsx               React entry point
+│   ├── package.json               Frontend dependencies
+│   └── vite.config.js             Vite bundler configuration
+│
+└── CinemaTicketsReact/            ASP.NET Core Backend Application
+    ├── Controllers/               API Endpoints (Cinemas, Reservations, Screenings, Users)
+    ├── Data/                      Entity Framework Database Context
+    ├── DTOs/                      Data Transfer Objects for API requests/responses
+    ├── Migrations/                Database schema migrations
+    ├── Models/                    Domain entities (Cinema, Reservation, Screening, User)
+    ├── Program.cs                 Backend entry point and service configuration
+    └── appsettings.json           Backend configuration and connection strings
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+```
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+## Architecture
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+The application follows a decoupled Client-Server architecture.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+The `CinemaTicketsReact` backend acts as a RESTful API. The `Controllers` package mediates incoming HTTP requests, interacting with the database via Entity Framework Core, and returning JSON responses.
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+The `CinemaTicketsClient` frontend is a Single Page Application (SPA) built with React. The `src/components` directory contains modular UI elements, while top-level files act as views.
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+This separation keeps the user interface behavior completely independent from the data processing and storage logic, making both components easier to test, scale, and deploy.
 
-## License
-For open source projects, say how it is licensed.
+## Design Patterns and Design Choices
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Several design patterns and principles were applied to reduce coupling between classes and improve extensibility.
+
+* **MVC (Model-View-Controller):** Used on the backend to separate API routing (Controllers) from data structures (Models).
+
+* **DTO (Data Transfer Object):** Implemented in the backend (`CinemaDetailsDTO`, `ReservationDTO`, etc.) to decouple internal database models from the external API contract, preventing over-posting and hiding sensitive data.
+
+* **Context API / Provider Pattern:** Used in the frontend (`AuthContext.jsx`) to provide global state management for user authentication without prop-drilling.
+
+* **Component-Based UI:** The frontend breaks down complex views into reusable pieces (e.g., `ScreeningRow`, `DeleteCard`, `FormInput`).
+
+* **Repository/ORM Pattern:** Entity Framework Core (`CinemaTicketsContext`) abstracts raw SQL queries into object-oriented C# operations.
+
+## Application Flow
+
+Users begin at the `Home` view and navigate through available cinemas and `Screenings`.
+
+Authentication is handled via the `Login` and `Register` components. Once authenticated, the `AuthContext` provides the user's session data across the application.
+Users can then view `ScreeningDetails`, select seats for multi-user booking, and make a `ConfirmBook` request. These actions trigger asynchronous fetch calls to the backend `Controllers`, which validate business logic, manage concurrency, and handle changes across multiple sessions before finalizing transactions.
+
+## Data and Persistence
+
+Application data is stored in a relational database managed via Entity Framework Core.
+
+The core domain model includes:
+
+* **Users:** Stores account details, multi-account modification tracking, and authentication status.
+
+* **Cinemas:** Stores theater locations and details.
+
+* **Screenings:** Links a movie, a cinema, and a specific showtime.
+
+* **Reservations:** A mapping entity connecting a User to a specific Screening, supporting multi-user ticket allocation.
+
+Database schema changes are tracked and persisted using EF Core Migrations (found in the `Migrations/` directory).
